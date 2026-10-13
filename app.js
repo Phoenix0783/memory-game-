@@ -1,64 +1,123 @@
-document.addEventListener("DOMContentLoaded", (e) => {
-  console.log(e);
-  cardGenerator();
+document.addEventListener("DOMContentLoaded", () => {
   board();
+  cardGenerator();
 });
 
-const cardGenerator = () => {
-  //We generate the object 🧑🏻‍💻
-  let cardData = [
-    { imgSrc: "./images/beatles.jpeg", id: 1, name: "beatles" },
-    { imgSrc: "./images/blink182.jpeg", id: 2, name: "blink 182" },
-    { imgSrc: "./images/fkatwigs.jpeg", id: 3, name: "fka twigs" },
-    { imgSrc: "./images/fleetwood.jpeg", id: 4, name: "fleetwood" },
-    { imgSrc: "./images/joy-division.jpeg", id: 5, name: "joy division" },
-    { imgSrc: "./images/ledzep.jpeg", id: 6, name: "lep zeppelin" },
-    { imgSrc: "./images/metallica.jpeg", id: 7, name: "metallica" },
-    { imgSrc: "./images/pinkfloyd.jpeg", id: 8, name: "pink floyd" },
-    { imgSrc: "./images/beatles.jpeg", id: 9, name: "beatles" },
-    { imgSrc: "./images/blink182.jpeg", id: 10, name: "blink 182" },
-    { imgSrc: "./images/fkatwigs.jpeg", id: 11, name: "fka twigs" },
-    { imgSrc: "./images/fleetwood.jpeg", id: 12, name: "fleetwood" },
-    { imgSrc: "./images/joy-division.jpeg", id: 13, name: "joy division" },
-    { imgSrc: "./images/ledzep.jpeg", id: 14, name: "led zeppelin" },
-    { imgSrc: "./images/metallica.jpeg", id: 15, name: "metallica" },
-    { imgSrc: "./images/pinkfloyd.jpeg", id: 16, name: "pink floyd" },
-  ];
-
-  //We need to shuffle the cards 🃏
-  cardData.sort(() => Math.random() - 0.5);
-
-  //We generate the cards ♣️
-  cardData.forEach((item) => {
-    const section = document.querySelector("section");
-    const card = document.createElement("div");
-    card.classList = "card";
-
-    card.setAttribute("id", item.id);
-    card.setAttribute("name", item.name);
-
-    const face = document.createElement("img");
-    face.classList = "face";
-    face.src = item.imgSrc;
-
-    const back = document.createElement("div");
-    back.classList = "back";
-
-    section.appendChild(card);
-    card.appendChild(face);
-    card.appendChild(back);
-
-    card.addEventListener("click", (e) => {
-      console.log(e);
-      //Run our flip animation
-      face.classList.toggle("toggleCard");
-      card.classList.toggle("toggleCard");
-    });
-  });
-
-  //
+const state = {
+  firstCard: null,
+  secondCard: null,
+  lockBoard: false,
+  matches: 0,
 };
 
+const totalPairs = 8;
+
 const board = () => {
-  console.log("i will fight you");
+  const resetButton = document.querySelector("#reset-button");
+  const matches = document.querySelector(".matches");
+
+  if (matches) {
+    matches.textContent = `0/${totalPairs}`;
+  }
+
+  if (resetButton) {
+    resetButton.addEventListener("click", () => {
+      state.firstCard = null;
+      state.secondCard = null;
+      state.lockBoard = false;
+      state.matches = 0;
+      if (matches) {
+        matches.textContent = `0/${totalPairs}`;
+      }
+      cardGenerator();
+    });
+  }
+};
+
+const checkForMatch = () => {
+  const isMatch = state.firstCard.dataset.name === state.secondCard.dataset.name;
+
+  if (isMatch) {
+    state.firstCard.classList.add("matched");
+    state.secondCard.classList.add("matched");
+    state.firstCard.style.pointerEvents = "none";
+    state.secondCard.style.pointerEvents = "none";
+    state.matches += 1;
+
+    const matches = document.querySelector(".matches");
+    if (matches) {
+      matches.textContent = `${state.matches}/${totalPairs}`;
+    }
+
+    state.firstCard = null;
+    state.secondCard = null;
+    state.lockBoard = false;
+    return;
+  }
+
+  setTimeout(() => {
+    state.firstCard.classList.remove("flipped");
+    state.secondCard.classList.remove("flipped");
+    state.firstCard = null;
+    state.secondCard = null;
+    state.lockBoard = false;
+  }, 700);
+};
+
+const cardGenerator = () => {
+  const section = document.querySelector("section");
+  if (!section) return;
+
+  const cardData = [
+    { imgSrc: "./images/beatles.jpeg", name: "beatles" },
+    { imgSrc: "./images/blink182.jpeg", name: "blink 182" },
+    { imgSrc: "./images/fkatwigs.jpeg", name: "fka twigs" },
+    { imgSrc: "./images/fleetwood.jpeg", name: "fleetwood" },
+    { imgSrc: "./images/joy-division.jpeg", name: "joy division" },
+    { imgSrc: "./images/ledzep.jpeg", name: "led zeppelin" },
+    { imgSrc: "./images/metallica.jpeg", name: "metallica" },
+    { imgSrc: "./images/pinkfloyd.jpeg", name: "pink floyd" },
+  ];
+
+  const deck = [...cardData, ...cardData]
+    .map((item, index) => ({ ...item, id: `${item.name}-${index}` }))
+    .sort(() => Math.random() - 0.5);
+
+  section.innerHTML = "";
+
+  deck.forEach((item) => {
+    const card = document.createElement("div");
+    card.classList.add("card");
+    card.dataset.name = item.name;
+    card.id = item.id;
+
+    const face = document.createElement("img");
+    face.classList.add("face");
+    face.src = item.imgSrc;
+    face.alt = item.name;
+
+    const back = document.createElement("div");
+    back.classList.add("back");
+
+    card.appendChild(face);
+    card.appendChild(back);
+    section.appendChild(card);
+
+    card.addEventListener("click", () => {
+      if (state.lockBoard || card === state.firstCard || card.classList.contains("flipped")) {
+        return;
+      }
+
+      card.classList.add("flipped");
+
+      if (!state.firstCard) {
+        state.firstCard = card;
+        return;
+      }
+
+      state.secondCard = card;
+      state.lockBoard = true;
+      checkForMatch();
+    });
+  });
 };
