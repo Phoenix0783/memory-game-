@@ -4,18 +4,39 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Memory Game</title>
+    <meta
+      name="theme-color"
+      content="#081820"
+    />
+    <meta
+      name="description"
+      content="An anime-themed memory game. Find all nine matching pairs."
+    />
+    <title>Memory Match — Anime Edition</title>
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <div class="game">
-      <div class="topbar">
-        <h1>Memory Game</h1>
-        <div class="score">Matches: <span class="matches">0/8</span></div>
-      </div>
-      <button id="reset-button" type="button">Reset</button>
-      <section></section>
-    </div>
+    <main class="game">
+      <header class="topbar">
+        <div class="heading">
+          <p class="eyebrow">The anime edition</p>
+          <h1>Memory <span>Match</span></h1>
+          <p class="subtitle">Find the matching characters.</p>
+        </div>
+        <div class="game-controls">
+          <div class="score" aria-live="polite">
+            <span class="score-label">Matches</span>
+            <span class="matches">0/9</span>
+          </div>
+          <button id="reset-button" type="button">
+            <span aria-hidden="true">↻</span>
+            <span>New game</span>
+          </button>
+        </div>
+      </header>
+      <section class="board" aria-label="Memory game cards"></section>
+      <p class="hint">Pick two characters and see if you can find a pair.</p>
+    </main>
     <script src="./app.js"></script>
   </body>
 </html>

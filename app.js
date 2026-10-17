@@ -10,7 +10,19 @@ const state = {
   matches: 0,
 };
 
-const totalPairs = 8;
+const cardData = [
+  { imgSrc: "./images/Ace.jpg", name: "Ace" },
+  { imgSrc: "./images/gojo.jpg", name: "Gojo" },
+  { imgSrc: "./images/goku.jpg", name: "Goku" },
+  { imgSrc: "./images/kakashi.jpg", name: "Kakashi" },
+  { imgSrc: "./images/law.jpg", name: "Law" },
+  { imgSrc: "./images/luffy.jpg", name: "Luffy" },
+  { imgSrc: "./images/shanks.jpg", name: "Shanks" },
+  { imgSrc: "./images/sukuna.jpg", name: "Sukuna" },
+  { imgSrc: "./images/uppermoon.jpg", name: "Upper Moon" },
+];
+
+const totalPairs = cardData.length;
 
 const board = () => {
   const resetButton = document.querySelector("#reset-button");
@@ -67,17 +79,6 @@ const checkForMatch = () => {
 const cardGenerator = () => {
   const section = document.querySelector("section");
   if (!section) return;
-
-  const cardData = [
-    { imgSrc: "./images/beatles.jpeg", name: "beatles" },
-    { imgSrc: "./images/blink182.jpeg", name: "blink 182" },
-    { imgSrc: "./images/fkatwigs.jpeg", name: "fka twigs" },
-    { imgSrc: "./images/fleetwood.jpeg", name: "fleetwood" },
-    { imgSrc: "./images/joy-division.jpeg", name: "joy division" },
-    { imgSrc: "./images/ledzep.jpeg", name: "led zeppelin" },
-    { imgSrc: "./images/metallica.jpeg", name: "metallica" },
-    { imgSrc: "./images/pinkfloyd.jpeg", name: "pink floyd" },
-  ];
 
   const deck = [...cardData, ...cardData]
     .map((item, index) => ({ ...item, id: `${item.name}-${index}` }))
